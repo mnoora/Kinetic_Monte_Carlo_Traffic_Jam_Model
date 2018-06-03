@@ -76,12 +76,11 @@ void printRoad(vector<char> road){
 void KMC(mt19937& rand,vector<char> road){
 
   // How often the road is printed (now every 100 time units)
-  double printLimit=0.1;
-  double limit = printLimit;
-  
+  double printLimit=100;
+  double limit=printLimit;
   double t=0;
   double u;
-  // vectors for jump rates and cumulative function
+  // Vectors for jump rates and cumulative function
   vector<int> jumpRates(road.size());
   vector<int> cumulativeF(road.size());
   
@@ -89,7 +88,7 @@ void KMC(mt19937& rand,vector<char> road){
   int event =0;
   double deltaT=0;
   int index=0;
-  while(index <= 1000000){
+  while(index <= 10000000){
     // Calculating the jump rates and the cumulative function
     jumpRates=jumpRateVec(road);
     cumulativeF=calculateCumulativeFunction(jumpRates);
@@ -106,8 +105,7 @@ void KMC(mt19937& rand,vector<char> road){
     u=(double)rand()/rand.max();
     deltaT=(double)-log(u)/RN;
     t+=deltaT;
-
-    // Printing the road every 100 time units
+  
     if(printLimit < 0){
       cout<<t<<endl;
       printRoad(road);
@@ -116,11 +114,7 @@ void KMC(mt19937& rand,vector<char> road){
       printLimit-=deltaT;
     }
     index++;
-  }
-
-  
-    
-  
+  }  
 }
 
 // Creating a vector for jump rates
@@ -154,6 +148,11 @@ int calculateRate(vector<char> road,int index){
     }else{
       break;
     }
+    // The speed limit of 3, so the jump rates cannot be bigger than three
+     if(rate > 3){
+      rate=3;
+      break;
+    }
    
     start++;
      if(start >=road.size()){
@@ -164,8 +163,7 @@ int calculateRate(vector<char> road,int index){
 }	
 	
 	
-
-// Printing the vector with jump rates
+// Printing a vector with jump rates
 void printRates(vector<int> rates){
   for(int i=0;i<rates.size();i++){
     cout<<rates[i];
@@ -173,7 +171,7 @@ void printRates(vector<int> rates){
   cout<<"\n";
 }
 
-// Calculating the cumulative fucntion
+// Calculating the cumulative function
 vector<int> calculateCumulativeFunction(vector<int> rates){
   vector<int> cumulativeF(rates.size());
   int sum =0;
@@ -187,9 +185,9 @@ vector<int> calculateCumulativeFunction(vector<int> rates){
   return cumulativeF;
 }
 
-
-int findEvent(vector<int> R,int RN,double u){
+ int findEvent(vector<int> R,int RN,double u){
    int eventIndex =0;
+
    //finding an event to carry out, with the KMC condition
    while(R[eventIndex]==0){
      eventIndex++;
@@ -216,8 +214,6 @@ vector<char> moveCar(vector<char> road,int index){
   return road;
 }
   
-	
-	
 	
 	
 	
